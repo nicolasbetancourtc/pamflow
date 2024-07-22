@@ -4,9 +4,9 @@ import glob
 from utils import merge_annot_files
 
 # Variables
-path_annot = '../../../2023_SONABIO/Análisis/output/birdnet/detections/'
-min_conf = 0.8
-path_save_matrix = '../../../2023_SONABIO/Análisis/output/birdnet/'
+path_annot = '../../../../Análisis/output/birdnet/MT-T2/detections/'
+min_conf = 0.5
+path_save_matrix = '../../../../Análisis/output/birdnet/MT-T2'
 
 # Load data a format it as an abundance matrix with files rows
 flist = glob.glob(os.path.join(path_annot,'**','*.csv'), recursive=True)

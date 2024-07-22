@@ -30,54 +30,48 @@ def validate_graph(path):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-        description="Perform preprocessing operations on audio data.")
-    parser.add_argument(
-        "operation", 
-        choices=[
-            "compute_index",
-        ],
-        help="Plot operation")
-    
+        description="Compute Biotic Acoustic Integrity (BAI)")
     parser.add_argument("--input", "-i", 
                         type=str, help="Path to directory to search")
     parser.add_argument("--output", "-o", 
                         type=str, help="Path and filename to save results")
     parser.add_argument("--config", "-c", type=str, default='config.yaml',
-                        help="Path to configuration file. ")
-    parser.add_argument("--recursive", "-r", 
-                        action="store_true", help="Enable recursive mode")
+                        help="Path to configuration file")
+    parser.add_argument("--distance", "-d", type=str, default='cosine',
+                        help="Distance metric to compute index: 'cosine' or 'braycurtis'")
     args = parser.parse_args()
 
     # Load configuration
+    distance_metric = args.distance
     config_file = args.config
     config = load_config(config_file)
     template_forest = config["index"]["template_forest"]
     template_grassland = config["index"]["template_grassland"]
 
-    if args.operation == "compute_index":
-        # load templates
-        print('Computing index values...')
-        forest = pd.read_csv(template_forest)['Forest']
-        grassland = pd.read_csv(template_grassland)['Grassland']
-        if os.path.isfile(args.input):
-            # load sample
-            sample = validate_graph(args.input)
+
+    # load templates
+    print('Computing index values...')
+    forest = pd.read_csv(template_forest)['Forest']
+    grassland = pd.read_csv(template_grassland)['Grassland']
+    if os.path.isfile(args.input):
+        # load sample
+        sample = validate_graph(args.input)
+        # compute index value
+        idx_val = compute_index(sample, distance_metric, forest, grassland)
+        print(f'Index value for file {os.path.basename(args.input)}: {idx_val}')
+
+    elif os.path.isdir(args.input):
+        flist = glob.glob(os.path.join(args.input, '*.csv'))
+        df = dict()
+        for graph in flist:
+            sample = validate_graph(graph)
             # compute index value
-            idx_val = compute_index(sample, 'cosine', forest, grassland)
-            print(f'Index value for file {os.path.basename(args.input)}: {idx_val}')
+            idx_val = compute_index(sample, distance_metric, forest, grassland)
+            df[os.path.basename(graph)] = idx_val
+        df = pd.DataFrame(df.items(), columns=['fname', 'index_value'])
+        df.to_csv(args.output, index=False)
+        print(f'Results saved at {args.output}')
 
-        elif os.path.isdir(args.input):
-            flist = glob.glob(os.path.join(args.input, '*.csv'))
-            df = dict()
-            for graph in flist:
-                sample = validate_graph(graph)
-                # compute index value
-                idx_val = compute_index(sample, 'cosine', forest, grassland)
-                df[os.path.basename(graph)] = idx_val
-            df = pd.DataFrame(df.items(), columns=['fname', 'index_value'])
-            df.to_csv(args.output, index=False)
-            print(f'Results saved at {args.output}')
-
-        else:
-            print("Path does not exist or is not accessible.")
-        
+    else:
+        print("Path does not exist or is not accessible.")
+    
