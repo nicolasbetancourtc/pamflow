@@ -1,0 +1,35 @@
+# Basic settings
+preprocessing:
+  sample_length: 5  # length of sample to build timelapse
+  sample_period: '30T'
+  date_range:
+
+acoustic_indices:
+  target_fs: 48000  # sampling rate for analysis
+  filter_type: 'bandpass'
+  filter_cut: [300, 16000]
+  filter_order: 3
+  group_by_site: True
+  n_jobs: -1
+
+graph_soundscapes:
+  target_fs: 48000  # target sampling frequency
+  nperseg: 256  # window size to compute the spectrogram
+  noverlap: 0  # overlap between windows to compute the spectrogram
+  db_range: 80  # dB range for the spectrogram
+  min_distance: 5  # minimum distance between peaks
+  threshold_abs: -55  # threshold for detecting peaks
+  group_by_site: True
+  n_jobs: -1
+
+index:
+  template_forest: './templates/graph_denseforest.csv'
+  template_grassland: './templates/graph_grassland.csv'
+
+plot:
+  nperseg: 1024
+  noverlap: 512
+  fig_height: 4
+  fig_width: 15
+  db_range: 80
+  colormap: 'grey'  # 'grey', 'viridis', 'plasma', 'inferno', 'cvidis'
