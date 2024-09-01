@@ -443,7 +443,11 @@ def audio_timelapse(
                                     sample_len=sample_len, 
                                     verbose=verbose)
         if save_audio:
-            sound.write(os.path.join(path_save, f'{site}_timelapse.wav'), fs, long_wav, bit_depth=16)
+            #print(type(date_range[0]))
+            #print(date_range[0])
+            date_ini_str = date_range[0].strftime('%Y%m%d')
+            date_end_str = date_range[1].strftime('%Y%m%d')
+            sound.write(os.path.join(path_save, f'{site}_timelapse_{date_ini_str}_{date_end_str}.wav'), fs, long_wav, bit_depth=16)
         print('\n')
         
 #%%
