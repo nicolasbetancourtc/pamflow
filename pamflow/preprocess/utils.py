@@ -29,10 +29,12 @@ def load_config(config_file):
 #%% Function argument validation
 def input_validation(data_input):
     """ Validate dataframe or path input argument """
+    
     if isinstance(data_input, pd.DataFrame):
         return data_input
 
     elif isinstance(data_input, str):
+        
         if os.path.isdir(data_input):
             print('Collecting metadata from directory path')
             return util.get_metadata_dir(data_input, verbose=True)
@@ -353,9 +355,10 @@ def metadata_summary(df):
     pandas DataFrame
         A summary of each site
     """
-    # Function argument validation
+    
     df = input_validation(df)
-        
+    
+
     df['date'] = pd.to_datetime(df.date,  format='%Y-%m-%d %H:%M:%S')
     df.dropna(inplace=True)
     df_summary = {}
