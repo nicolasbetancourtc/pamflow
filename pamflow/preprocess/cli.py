@@ -48,6 +48,8 @@ if __name__ == "__main__":
                     help="Specify sites to execute the operation (default: None)")
     args = parser.parse_args()
 
+    
+
     verbose = 0 if args.quiet else 1
     select_sites = args.sites
 
@@ -85,6 +87,8 @@ if __name__ == "__main__":
             df, sample_length, sample_period='30T', date_range=date_range, path_save=args.output, save_audio=True, verbose=True)
     
     elif args.operation == "metadata_summary":
+        
+
         df = metadata_summary(args.input)
         df.to_csv(args.output, index=False)
         print('Process completed successfully')
